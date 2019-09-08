@@ -1,0 +1,25 @@
+{
+    "manifest_version": 2,
+    "name": "Neutron",
+    "version": "1.0",
+    "description": "Enhanced security for ProtonMail.",
+
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "https://protonmail.com/",
+        "https://old.protonmail.com/",
+        "https://beta.protonmail.com/",
+        "https://mail.protonmail.com/"
+    ],
+
+    "background": {
+        "scripts": [
+            "certwhitelist.js",
+            "scriptwhitelist.js",
+            "background.js"
+        ]
+    },
+
+    "web_accessible_resources": [ "pmscripts/*.js" ]
+}
