@@ -5,7 +5,7 @@ neutron
 when using ProtonMail via web interface.
 
 To achieve this, `neutron` intercepts and forces the web interface to use
-with given javascripts preloaded with extensions. These fixed scripts from
+with given javascripts preloaded within extensions. These fixed scripts from
 a given (trusted) version, elimates the possibilty, such as the ProtonMail
 server send a modified script containing backdoor and revealing user password
 to the server or anywhere else.
