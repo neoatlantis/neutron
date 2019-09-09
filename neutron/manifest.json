@@ -4,6 +4,20 @@
     "version": "1.0",
     "description": "Enhanced security for ProtonMail.",
 
+    "icons": {
+        "96": "icons/neutron-enabled.svg", 
+        "48": "icons/neutron-enabled.svg" 
+    },
+
+    "browser_action": {
+        "default_icon": {   
+            "16": "icons/neutron-enabled.svg", 
+            "32": "icons/neutron-enabled.svg" 
+        },
+        "default_title": "Neutron: Security enhancemet for ProtonMail.",
+        "default_popup": "pages/introduction.html"
+    },
+
     "permissions": [
         "webRequest",
         "webRequestBlocking",
@@ -15,11 +29,17 @@
 
     "background": {
         "scripts": [
+            "frozenconstants.js",
             "certwhitelist.js",
             "scriptwhitelist.js",
+            "headerfilter.js",
+            "flashicon.js",
             "background.js"
         ]
     },
 
-    "web_accessible_resources": [ "pmscripts/*.js" ]
+    "web_accessible_resources": [
+        "pages/*",
+        "pmscripts/*.js"
+    ]
 }

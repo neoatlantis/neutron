@@ -1,39 +1,5 @@
 console.log("Neutron started.");
 
-const BASEURL = new URL(browser.runtime.getURL("/"));
-
-
-const CSP = (function(){
-    var ruleset = {
-        "default-src": ["'self'"],
-        "connect-src": ["'self'", "blob:"],
-        "script-src": [
-            "'self'",
-            BASEURL.origin
-        ],
-        "child-src":  ["blob:"],
-        "style-src":  ["'self'", "'unsafe-inline'"],
-        "img-src": ["http:", "https:", "data:", "blob:", "cid:"],
-        "frame-src": ["'self'", "https://secure.protonmail.com"],
-        "require-sri-for": ["script"],
-//        "report-uri": ["https:/reports.protonmail.ch/reports/csp"],
-    };
-
-    /*for(var i in scriptWhitelist){
-        ruleset["script-src"].push("'" + scriptWhitelist[i] + "'");
-    }*/
-    
-    ruleset["script-src"].push("blob: 'sha256-eAhF1Kdccp0BTXM6nMW7SYBdV0c3fZwzcC177TQ692g='");
-
-    var result = [];
-    for(var rulename in ruleset){
-        result.push(rulename + " " + ruleset[rulename].join(" "));
-    };
-    result = result.join("; ");
-    return result;
-})();
-
-
 
 function findSecurityInfoProblem(securityInfo){
     // Decide if connection shall be terminated. If yes, return true.
@@ -74,14 +40,26 @@ async function onHeadersReceived(response){
     const securityInfo = await browser.webRequest.getSecurityInfo(
         response.requestId, { certificateChain: true });
 
+    flashicon();
+
     var blockingResponse = {};
 
     if(findSecurityInfoProblem(securityInfo)){
         console.error(
             "ALERT! Security level insufficient: ", pathname, " -> abort!");
-        blockingResponse.cancel = true;
+        if(response.type == "main_frame"){
+            blockingResponse.redirectUrl = browser.runtime.getURL(
+                "pages/insecure-https.html");
+        } else {
+            blockingResponse.cancel = true;
+        }
         return blockingResponse;
     }
+
+    // Original response headers contain Content-Security-Policy(CSP), this
+    // is replaced with our frozen version. See "headerfilter.js"
+    blockingResponse.responseHeaders = changeResponseHeader(
+        response.responseHeaders);
 
     if(response.type == "script"){
         for(var i in localServedScripts){
@@ -98,18 +76,6 @@ async function onHeadersReceived(response){
         return blockingResponse;
     }
 
-    blockingResponse.responseHeaders = [];
-    for(var i in response.responseHeaders){
-        if(response.responseHeaders[i].name != "Content-Security-Policy"){
-            blockingResponse.responseHeaders.push(
-                response.responseHeaders[i]);
-        } else {
-            blockingResponse.responseHeaders.push({
-                "name": "Content-Security-Policy",
-                "value": CSP,
-            });
-        }
-    }
     return blockingResponse;
 }
 
@@ -123,21 +89,3 @@ browser.webRequest.onHeadersReceived.addListener(
     },
     ["responseHeaders", "blocking"]
 );
-
-
-
-/*browser.webRequest.onHeadersReceived.addListener(
-    async function(response){
-        console.log("*********************************1");
-        console.log(await browser.webRequest.getSecurityInfo(response.requestId, { certificateChain: true }));
-        console.log("*********************************2");
-        return { cancel: false };
-    },
-    {
-        urls: [
-            "https://*.protonmail.com/*",
-            "https://protonmail.com/*",
-        ]
-    },
-    ["responseHeaders", "blocking"]
-);*/

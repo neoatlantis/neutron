@@ -1,5 +1,8 @@
 /*
 Whitelisted scripts for ProtonMail.
+
+All scripts are downloaded from either <mail.protonmail.com> or
+<old.protonmail.com> and stored under pmscripts/ as external resources.
 */
 
 const localServedScripts = [ //         Must begins with "/"
@@ -26,4 +29,10 @@ const localServedScripts = [ //         Must begins with "/"
     "/vendors~vendorLazy.module.027791caaf.chunk.js",
     "/vendors~appLazy.module.ff1e8d235b.chunk.js",
     "/appLazy.module.8b2e4f82e8.chunk.js",
+
+    // as of 2019-09-09
+    "/vendor2Lazy.module.175b42e10a.chunk.js",
+    "/vendor2Lazy.module.91de42d067.chunk.js",
+    "/vendors~vendor2Lazy.module.1df3e5d1be.chunk.js",
+    "/vendors~vendor2Lazy.module.75828ba4e6.chunk.js",
 ];
