@@ -11,20 +11,21 @@
 
     "browser_action": {
         "default_icon": {   
-            "16": "icons/neutron-enabled.svg", 
-            "32": "icons/neutron-enabled.svg" 
+            "16": "icons/neutron-disabled.svg", 
+            "32": "icons/neutron-disabled.svg" 
         },
         "default_title": "Neutron: Security enhancemet for ProtonMail.",
         "default_popup": "pages/introduction.html"
     },
 
     "permissions": [
+        "webNavigation",
         "webRequest",
         "webRequestBlocking",
-        "https://protonmail.com/",
-        "https://old.protonmail.com/",
-        "https://beta.protonmail.com/",
-        "https://mail.protonmail.com/"
+        "*://protonmail.com/",
+        "*://old.protonmail.com/",
+        "*://beta.protonmail.com/",
+        "*://mail.protonmail.com/"
     ],
 
     "background": {

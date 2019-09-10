@@ -4,7 +4,8 @@ console.log("Neutron started.");
 function findSecurityInfoProblem(securityInfo){
     // Decide if connection shall be terminated. If yes, return true.
     // Generally if this is not "secure", then it shall not be allowed.
-    if(securityInfo.state != "secure") return true;
+    if("secure" !== securityInfo.state) return true;
+    if(true === securityInfo.isUntrusted) return true;
     // Filter certificate chains
     for(var i in securityInfo.certificates){
         var cert = securityInfo.certificates[i];
@@ -40,7 +41,7 @@ async function onHeadersReceived(response){
     const securityInfo = await browser.webRequest.getSecurityInfo(
         response.requestId, { certificateChain: true });
 
-    flashicon();
+    flashicon(response.tabId);
 
     var blockingResponse = {};
 
@@ -88,4 +89,15 @@ browser.webRequest.onHeadersReceived.addListener(
         ]
     },
     ["responseHeaders", "blocking"]
+);
+
+browser.webRequest.onBeforeRequest.addListener(
+    function(){ return { cancel: true }; },
+    {
+        urls: [
+            "http://*.protonmail.com/*",
+            "http://protonmail.com/*",
+        ]
+    },
+    ["blocking"]
 );
